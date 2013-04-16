@@ -2,7 +2,12 @@
 # Cookbook Name:: rails_env
 # Recipe:: default
 #
-# Copyright 2013, YOUR_COMPANY_NAME
+# Copyright 2013, CloverInteractive
 #
-# All rights reserved - Do Not Redistribute
 #
+
+app_dir = node['rails_env']['app_dir'] || '/home/w'
+
+include_recipe 'rails_env::setup'
+include_recipe 'rails_env::ruby'
+include_recipe 'rails_env::postgresql'
