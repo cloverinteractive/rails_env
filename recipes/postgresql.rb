@@ -1,29 +1,24 @@
-node['postgresql'] = {
-  'version'           => '9.2',
-  'enable_pitti_ppa'  => true,
+include_recipe 'apt'
 
-  'server' => {
-    'packages' =>  %w/postgresql-9.2/
-  },
+# use `apt.postgresql.org` for primary package installation support
+apt_repository "apt.postgresql.org" do
+  uri "http://apt.postgresql.org/pub/repos/apt"
+  distribution "#{node["lsb"]["codename"]}-pgdg"
+  components ["main"]
+  key "http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc"
+  action :add
+end
 
-  'client' => {
-    'packages' => %w/postgresql-client-9.2/
-  },
+# automatically get repository key updates
+package 'pgdg-keyring'
 
-  'config' => {
-    'listen_address' => 'localhost',
-    'port'           => '5432'
-  },
+#postgresql specifiq packages
+package 'postgresql-9.2'
+package 'postgresql-client-9.2'
+package 'postgresql-common'
 
-  'pg_hba' => [
-    { 'type' => 'local',  'db' => 'postgres', 'user' => 'postgres', 'addr' => nil,          'method' => 'trust' },
-    { 'type' => 'host',   'db' => 'all',      'user' => 'all',      'addr' => '0.0.0.0/0',  'method' => 'md5' },
-    { 'type' => 'host',   'db' => 'all',      'user' => 'all',      'addr' => '::1/0',      'method' => 'm5' }
-  ],
-
-  'password' => {
-    'postgres' => 'foo'
-  }
-}
-
-include_recipe 'postgresql::server'
+# define the service
+service "postgresql" do
+  supports :restart => true
+  action [:enable, :start]
+end
