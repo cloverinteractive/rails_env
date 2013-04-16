@@ -6,7 +6,7 @@ description      'Installs/Configures rails environment'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.1.0'
 
-depends 'apt'
+depends 'apt',                '1.7.0'
 depends 'ruby_build'
 depends 'rbenv'
 depends 'build-essential'
